@@ -14,7 +14,10 @@ export function buildTextMap(textNodes) {
 
 export function orderTextNodesByPosition(records) {
   const pages = new Map();
+  const seenNodes = new Set();
   for (const record of records) {
+    if (seenNodes.has(record.node)) continue;
+    seenNodes.add(record.node);
     if (!pages.has(record.page)) pages.set(record.page, []);
     pages.get(record.page).push(record);
   }

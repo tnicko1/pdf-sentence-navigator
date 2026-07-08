@@ -56,18 +56,18 @@ function collectSentences() {
   const records = [];
   for (const page of viewer.querySelectorAll(".page")) {
     const pageNumber = Number(page.dataset.page);
-    for (const span of page.querySelectorAll(".textLayer span")) {
-      const rect = span.getBoundingClientRect();
-      const walker = document.createTreeWalker(span, NodeFilter.SHOW_TEXT);
-      while (walker.nextNode()) {
-        records.push({
-          node: walker.currentNode,
-          page: pageNumber,
-          top: rect.top,
-          left: rect.left,
-          height: rect.height
-        });
-      }
+    const textLayer = page.querySelector(".textLayer");
+    const walker = document.createTreeWalker(textLayer, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      const rect = node.parentElement.getBoundingClientRect();
+      records.push({
+        node,
+        page: pageNumber,
+        top: rect.top,
+        left: rect.left,
+        height: rect.height
+      });
     }
   }
   const nodes = orderTextNodesByPosition(records);

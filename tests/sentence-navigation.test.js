@@ -44,4 +44,14 @@ describe("sentence navigation", () => {
     ]);
     expect(buildTextMap(ordered).text).toBe("Left right.");
   });
+
+  it("does not collect the same nested PDF text node more than once", () => {
+    const node = { nodeValue: "Only once." };
+    const ordered = orderTextNodesByPosition([
+      { node, page: 1, top: 20, left: 10, height: 12 },
+      { node, page: 1, top: 20, left: 10, height: 12 }
+    ]);
+    expect(ordered).toEqual([node]);
+    expect(buildTextMap(ordered).text).toBe("Only once.");
+  });
 });
