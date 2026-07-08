@@ -1,6 +1,6 @@
 {
   "name": "pdf-sentence-navigator",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Chrome MV3 extension for navigating PDF sentences with Tab and Shift+Tab",
   "type": "module",
   "scripts": {

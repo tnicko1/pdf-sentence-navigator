@@ -16,7 +16,7 @@ const DEFAULTS = {
   highlightStyle: "background",
   pageTheme: "normal",
   pageLayout: "single",
-  fitMode: "width",
+  fitMode: "actual",
   speechRate: 1,
   speechVoice: "",
   autoDelay: 5
