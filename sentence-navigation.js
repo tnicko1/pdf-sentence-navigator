@@ -26,10 +26,13 @@ export function addBlockSeparators(nodes, recordByNode) {
 
     const currentRecord = recordByNode.get(node);
     const nextRecord = recordByNode.get(next);
+    // A PDF page boundary is a layout boundary, not necessarily a text-block
+    // boundary. Let sentence punctuation decide whether the text continues.
+    if (currentRecord.page !== nextRecord.page) continue;
     const verticalGap = nextRecord.top - (currentRecord.top + currentRecord.height);
     const fontSizeTransition = currentRecord.height > nextRecord.height * 1.35;
     const blockGap = verticalGap > Math.max(8, Math.min(currentRecord.height, nextRecord.height) * 0.75);
-    if (currentRecord.page !== nextRecord.page || fontSizeTransition || blockGap) {
+    if (fontSizeTransition || blockGap) {
       result.push("\n\n");
     }
   }

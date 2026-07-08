@@ -66,4 +66,16 @@ describe("sentence navigation", () => {
     expect(text).toBe("Sample PDF\n\nThis is a body sentence.");
     expect(segmentSentences(text, "en")).toHaveLength(2);
   });
+
+  it("keeps one sentence continuous across a page boundary", () => {
+    const pageOne = { nodeValue: "This book is a treatise on the theory of" };
+    const pageTwo = { nodeValue: "ethics, very popular during the Renaissance." };
+    const records = new Map([
+      [pageOne, { node: pageOne, page: 1, top: 700, left: 10, height: 16 }],
+      [pageTwo, { node: pageTwo, page: 2, top: 80, left: 10, height: 16 }]
+    ]);
+    const text = buildTextMap(addBlockSeparators([pageOne, pageTwo], records)).text;
+    expect(text).toBe("This book is a treatise on the theory of ethics, very popular during the Renaissance.");
+    expect(segmentSentences(text, "en")).toHaveLength(1);
+  });
 });
