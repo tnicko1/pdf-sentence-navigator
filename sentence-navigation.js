@@ -12,6 +12,41 @@ export function buildTextMap(textNodes) {
   return { text, entries };
 }
 
+export function orderTextNodesByPosition(records) {
+  const pages = new Map();
+  for (const record of records) {
+    if (!pages.has(record.page)) pages.set(record.page, []);
+    pages.get(record.page).push(record);
+  }
+
+  const ordered = [];
+  for (const page of [...pages.keys()].sort((a, b) => a - b)) {
+    const candidates = pages.get(page).sort((a, b) => a.top - b.top || a.left - b.left);
+    const lines = [];
+
+    for (const candidate of candidates) {
+      const center = candidate.top + candidate.height / 2;
+      const line = lines.find((item) =>
+        Math.abs(item.center - center) <= Math.max(3, Math.min(item.height, candidate.height) * 0.6)
+      );
+      if (line) {
+        line.items.push(candidate);
+        line.center = (line.center * (line.items.length - 1) + center) / line.items.length;
+        line.height = Math.max(line.height, candidate.height);
+      } else {
+        lines.push({ center, height: candidate.height, items: [candidate] });
+      }
+    }
+
+    lines.sort((a, b) => a.center - b.center);
+    for (const line of lines) {
+      line.items.sort((a, b) => a.left - b.left);
+      ordered.push(...line.items.map(({ node }) => node));
+    }
+  }
+  return ordered;
+}
+
 export function segmentSentences(text, locale) {
   const segmenter = new Intl.Segmenter(locale || undefined, { granularity: "sentence" });
   return [...segmenter.segment(text)]
