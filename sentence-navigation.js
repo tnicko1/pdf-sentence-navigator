@@ -52,6 +52,12 @@ export function orderTextNodesByPosition(records) {
   const ordered = [];
   for (const page of [...pages.keys()].sort((a, b) => a - b)) {
     const candidates = pages.get(page).sort((a, b) => a.top - b.top || a.left - b.left);
+    const vertical = candidates.filter((item) => item.width && item.height > item.width * 1.5).length > candidates.length / 2;
+    if (vertical) {
+      candidates.sort((a, b) => b.left - a.left || a.top - b.top);
+      ordered.push(...candidates.map(({ node }) => node));
+      continue;
+    }
     const lines = [];
 
     for (const candidate of candidates) {
@@ -70,7 +76,8 @@ export function orderTextNodesByPosition(records) {
 
     lines.sort((a, b) => a.center - b.center);
     for (const line of lines) {
-      line.items.sort((a, b) => a.left - b.left);
+      const rtl = line.items.filter((item) => item.direction === "rtl").length > line.items.length / 2;
+      line.items.sort((a, b) => rtl ? b.left - a.left : a.left - b.left);
       ordered.push(...line.items.map(({ node }) => node));
     }
   }

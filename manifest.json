@@ -1,12 +1,15 @@
 {
   "manifest_version": 3,
   "name": "PDF Sentence Navigator",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Navigate PDF sentences with Tab and Shift+Tab, entirely in your browser.",
   "permissions": ["tabs", "webNavigation", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
   "action": {
     "default_title": "Open this PDF in Sentence Navigator"

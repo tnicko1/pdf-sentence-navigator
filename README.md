@@ -22,6 +22,10 @@ A Chrome Manifest V3 extension for keyboard navigation between sentences in PDF 
 - Browser text-to-speech for the active sentence
 - Preferences persisted locally with `chrome.storage`
 
+Version 2 also includes per-document resume state, bookmarks with notes, local export, document search, reading statistics, auto-advance, pause/resume speech with voice and speed controls, page thumbnails, PDF outlines and links, a command palette, dark/sepia page modes, fit and two-page layouts, touch gestures, RTL/vertical text ordering, lazy canvas/thumbnail rendering, and optional bundled English OCR for scanned PDFs.
+
+OCR runs entirely inside the extension using bundled Tesseract WebAssembly and language data. It can be CPU-intensive on long scanned documents.
+
 ## Install in Chrome
 
 1. Download or clone this repository.

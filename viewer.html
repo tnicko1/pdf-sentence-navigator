@@ -18,7 +18,8 @@
     <main id="viewer" aria-label="PDF document"></main>
     <section id="empty-state" hidden>
       <h1>No selectable text found</h1>
-      <p>This PDF may contain scanned images. Local OCR is not included.</p>
+      <p>This PDF may contain scanned images. You can run the bundled local English OCR engine.</p>
+      <button id="run-ocr">Run local English OCR</button>
     </section>
     <div id="error" role="alert" hidden></div>
 
@@ -35,8 +36,24 @@
       <span class="divider"></span>
       <button id="focus-toggle" title="Toggle focus mode" aria-pressed="false">Focus</button>
       <button id="speak" title="Read active sentence aloud">Speak</button>
+      <button id="auto-advance" title="Auto-advance" aria-pressed="false">Auto</button>
+      <button id="bookmark" title="Bookmark active sentence">★</button>
+      <button id="search-open" title="Search document">⌕</button>
+      <button id="sidebar-open" title="Document sidebar">☰</button>
+      <button id="command-open" title="Command palette">⌘</button>
       <button id="settings-open" title="Preferences" aria-label="Preferences">⚙</button>
     </nav>
+
+    <aside id="sidebar" hidden>
+      <header><strong>Document</strong><button id="sidebar-close" aria-label="Close sidebar">×</button></header>
+      <div class="tabs"><button data-panel="pages-panel">Pages</button><button data-panel="outline-panel">Outline</button><button data-panel="bookmarks-panel">Bookmarks</button><button data-panel="stats-panel">Stats</button></div>
+      <section id="pages-panel"></section>
+      <section id="outline-panel" hidden></section>
+      <section id="bookmarks-panel" hidden></section>
+      <section id="stats-panel" hidden><dl><dt>Reading time</dt><dd id="reading-time">0 min</dd><dt>Sentences visited</dt><dd id="sentences-visited">0</dd><dt>Estimated remaining</dt><dd id="time-remaining">—</dd></dl></section>
+    </aside>
+
+    <div id="search-bar" hidden><input id="search-input" type="search" placeholder="Search this PDF…"><output id="search-count">0 results</output><button id="search-previous">↑</button><button id="search-next">↓</button><button id="search-close">×</button></div>
 
     <dialog id="settings">
       <form method="dialog">
@@ -45,14 +62,24 @@
         <label>Highlight opacity <input id="highlight-opacity" type="range" min="20" max="90" step="5"></label>
         <label>Next sentence key <select id="next-key"><option>Tab</option><option>ArrowDown</option><option>ArrowRight</option><option>Enter</option></select></label>
         <label>Previous sentence key <select id="previous-key"><option value="Shift+Tab">Shift+Tab</option><option>ArrowUp</option><option>ArrowLeft</option><option value="Shift+Enter">Shift+Enter</option></select></label>
+        <label>Highlight style <select id="highlight-style"><option value="background">Background</option><option value="underline">Underline</option><option value="outline">Outline</option><option value="ruler">Reading ruler</option></select></label>
+        <label>Page appearance <select id="page-theme"><option value="normal">Normal</option><option value="dark">Dark page</option><option value="sepia">Sepia</option></select></label>
+        <label>Page layout <select id="page-layout"><option value="single">Single page</option><option value="two">Two-page spread</option></select></label>
+        <label>Fit mode <select id="fit-mode"><option value="width">Fit width</option><option value="page">Fit page</option><option value="actual">Actual size</option></select></label>
+        <label>Speech rate <input id="speech-rate" type="range" min="0.5" max="2" step="0.1"></label>
+        <label>Speech voice <select id="speech-voice"><option value="">Browser default</option></select></label>
+        <label>Auto-advance delay <input id="auto-delay" type="range" min="1" max="15" step="1"></label>
         <label class="check"><input id="smooth-scroll" type="checkbox"> Smooth scrolling</label>
         <label class="check"><input id="focus-default" type="checkbox"> Start in focus mode</label>
         <label class="check"><input id="high-contrast" type="checkbox"> High-contrast controls</label>
         <label class="check"><input id="reduced-motion" type="checkbox"> Reduce motion</label>
         <label class="check"><input id="announce-sentence" type="checkbox"> Announce sentence position to screen readers</label>
-        <footer><button id="settings-reset" value="reset" type="button">Reset</button><button value="save">Save</button></footer>
+        <footer><button id="preferences-import" type="button">Import</button><button id="preferences-export" type="button">Export</button><button id="settings-reset" value="reset" type="button">Reset</button><button value="save">Save</button></footer>
       </form>
     </dialog>
+
+    <dialog id="command-dialog"><form method="dialog"><h2>Command palette</h2><input id="command-query" placeholder="Type a command…" autocomplete="off"><div id="command-list"></div></form></dialog>
+    <input id="preferences-file" type="file" accept="application/json" hidden>
 
     <dialog id="password-dialog">
       <form method="dialog">

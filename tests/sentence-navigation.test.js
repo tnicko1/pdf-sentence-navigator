@@ -78,4 +78,24 @@ describe("sentence navigation", () => {
     expect(text).toBe("This book is a treatise on the theory of ethics, very popular during the Renaissance.");
     expect(segmentSentences(text, "en")).toHaveLength(1);
   });
+
+  it("orders right-to-left line fragments from right to left", () => {
+    const right = { nodeValue: "שלום" };
+    const left = { nodeValue: "עולם." };
+    const ordered = orderTextNodesByPosition([
+      { node: left, page: 1, top: 20, left: 10, height: 12, direction: "rtl" },
+      { node: right, page: 1, top: 20, left: 100, height: 12, direction: "rtl" }
+    ]);
+    expect(ordered).toEqual([right, left]);
+  });
+
+  it("orders vertical text by column and then top-to-bottom", () => {
+    const topRight = { nodeValue: "一" }, bottomRight = { nodeValue: "二" }, left = { nodeValue: "三" };
+    const ordered = orderTextNodesByPosition([
+      { node: left, page: 1, top: 10, left: 50, width: 8, height: 20 },
+      { node: bottomRight, page: 1, top: 40, left: 100, width: 8, height: 20 },
+      { node: topRight, page: 1, top: 10, left: 100, width: 8, height: 20 }
+    ]);
+    expect(ordered).toEqual([topRight, bottomRight, left]);
+  });
 });

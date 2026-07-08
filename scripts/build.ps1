@@ -12,4 +12,11 @@ foreach ($folder in @("cmaps", "standard_fonts", "wasm")) {
   if (Test-Path $folderTarget) { Remove-Item -LiteralPath $folderTarget -Recurse -Force }
   Copy-Item "$source/$folder" $folderTarget -Recurse -Force
 }
+$ocrTarget = Join-Path $target "ocr"
+if (Test-Path $ocrTarget) { Remove-Item -LiteralPath $ocrTarget -Recurse -Force }
+New-Item -ItemType Directory -Force -Path $ocrTarget | Out-Null
+Copy-Item "$root/node_modules/tesseract.js/dist/tesseract.esm.min.js" "$ocrTarget/tesseract.esm.min.js" -Force
+Copy-Item "$root/node_modules/tesseract.js/dist/worker.min.js" "$ocrTarget/worker.min.js" -Force
+Copy-Item "$root/node_modules/tesseract.js-core/tesseract-core-simd-lstm.wasm.js" "$ocrTarget/tesseract-core-simd-lstm.wasm.js" -Force
+Copy-Item "$root/node_modules/@tesseract.js-data/eng/4.0.0_best_int/eng.traineddata.gz" "$ocrTarget/eng.traineddata.gz" -Force
 Write-Output "PDF.js runtime copied to vendor/."
