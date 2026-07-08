@@ -29,11 +29,12 @@ OCR runs entirely inside the extension using bundled Tesseract WebAssembly and l
 ## Install in Chrome
 
 1. Download or clone this repository.
-2. Run `npm install` and `npm run build` (the repository also includes the generated `vendor` files after building).
-3. Open `chrome://extensions`.
-4. Enable **Developer mode**.
-5. Select **Load unpacked** and choose this repository folder.
-6. For PDFs opened from your computer, open the extension's **Details** and enable **Allow access to file URLs**.
+2. Open `chrome://extensions`.
+3. Enable **Developer mode**.
+4. Select **Load unpacked** and choose the cloned repository folder—the folder containing `manifest.json`.
+5. For PDFs opened from your computer, open the extension's **Details** and enable **Allow access to file URLs**.
+
+No installation command or build step is required for normal use. The repository already contains the generated `vendor/` directory with PDF.js, fonts, WebAssembly modules, and the optional local OCR runtime.
 
 ## Test the extension
 
@@ -44,7 +45,7 @@ OCR runs entirely inside the extension using bundled Tesseract WebAssembly and l
 
 Use the floating toolbar's gear button to configure visuals, scrolling, accessibility, and keyboard shortcuts. Preferences remain local to Chrome.
 
-Scanned/image-only PDFs need OCR and therefore show “No selectable text found”; this extension intentionally does not upload files for OCR.
+For scanned/image-only PDFs, select **Run local English OCR** from the empty-document screen. OCR is performed inside the extension and can take time on large documents.
 
 ## Development
 
@@ -52,9 +53,17 @@ Scanned/image-only PDFs need OCR and therefore show “No selectable text found�
 npm install
 npm run build
 npm test
+npm run test:e2e
 ```
 
-`npm run build` copies the pinned PDF.js runtime and its local support assets into `vendor/`. Reload the extension on `chrome://extensions` after changing source files.
+These commands are for contributors only:
+
+- `npm install` installs development dependencies.
+- `npm run build` refreshes the committed PDF.js and Tesseract assets in `vendor/`.
+- `npm test` runs unit tests.
+- `npm run test:e2e` loads the unpacked extension in Chrome and tests it with a real PDF fixture.
+
+Reload the extension on `chrome://extensions` after changing source files.
 
 ## Architecture
 
