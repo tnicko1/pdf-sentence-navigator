@@ -1,5 +1,5 @@
 import { getDocument, GlobalWorkerOptions, TextLayer } from "./vendor/pdf.min.mjs";
-import { buildTextMap, orderTextNodesByPosition, segmentSentences, rangesForSentence } from "./sentence-navigation.js";
+import { addBlockSeparators, buildTextMap, orderTextNodesByPosition, segmentSentences, rangesForSentence } from "./sentence-navigation.js";
 
 GlobalWorkerOptions.workerSrc = chrome.runtime.getURL("vendor/pdf.worker.min.mjs");
 
@@ -29,6 +29,9 @@ async function renderPage(pdf, pageNumber) {
   pageElement.dataset.page = pageNumber;
   pageElement.style.width = `${viewport.width}px`;
   pageElement.style.height = `${viewport.height}px`;
+  pageElement.style.setProperty("--scale-factor", viewport.scale);
+  pageElement.style.setProperty("--user-unit", page.userUnit);
+  pageElement.style.setProperty("--total-scale-factor", `calc(var(--scale-factor) * var(--user-unit))`);
 
   const canvas = document.createElement("canvas");
   canvas.width = Math.floor(viewport.width * outputScale);
@@ -71,7 +74,8 @@ function collectSentences() {
     }
   }
   const nodes = orderTextNodesByPosition(records);
-  const map = buildTextMap(nodes);
+  const recordByNode = new Map(records.map((record) => [record.node, record]));
+  const map = buildTextMap(addBlockSeparators(nodes, recordByNode));
   entries = map.entries;
   sentences = segmentSentences(map.text, document.documentElement.lang);
 }

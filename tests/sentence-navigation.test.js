@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildTextMap, orderTextNodesByPosition, segmentSentences, rangesForSentence } from "../sentence-navigation.js";
+import { addBlockSeparators, buildTextMap, orderTextNodesByPosition, segmentSentences, rangesForSentence } from "../sentence-navigation.js";
 
 describe("sentence navigation", () => {
   it("segments Georgian and English sentences", () => {
@@ -53,5 +53,17 @@ describe("sentence navigation", () => {
     ]);
     expect(ordered).toEqual([node]);
     expect(buildTextMap(ordered).text).toBe("Only once.");
+  });
+
+  it("separates a large heading from body sentences", () => {
+    const heading = { nodeValue: "Sample PDF" };
+    const body = { nodeValue: "This is a body sentence." };
+    const records = new Map([
+      [heading, { node: heading, page: 1, top: 20, left: 10, height: 36 }],
+      [body, { node: body, page: 1, top: 80, left: 10, height: 16 }]
+    ]);
+    const text = buildTextMap(addBlockSeparators([heading, body], records)).text;
+    expect(text).toBe("Sample PDF\n\nThis is a body sentence.");
+    expect(segmentSentences(text, "en")).toHaveLength(2);
   });
 });

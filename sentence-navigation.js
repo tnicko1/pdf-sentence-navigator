@@ -2,6 +2,10 @@ export function buildTextMap(textNodes) {
   let text = "";
   const entries = [];
   for (const node of textNodes) {
+    if (typeof node === "string") {
+      text += node;
+      continue;
+    }
     const value = node.nodeValue ?? "";
     if (!value) continue;
     if (text && !/\s$/.test(text) && !/^\s|^[,.;:!?%\)\]\}]/.test(value)) text += " ";
@@ -10,6 +14,26 @@ export function buildTextMap(textNodes) {
     entries.push({ node, start, end: text.length });
   }
   return { text, entries };
+}
+
+export function addBlockSeparators(nodes, recordByNode) {
+  const result = [];
+  for (let index = 0; index < nodes.length; index++) {
+    const node = nodes[index];
+    result.push(node);
+    const next = nodes[index + 1];
+    if (!next) continue;
+
+    const currentRecord = recordByNode.get(node);
+    const nextRecord = recordByNode.get(next);
+    const verticalGap = nextRecord.top - (currentRecord.top + currentRecord.height);
+    const fontSizeTransition = currentRecord.height > nextRecord.height * 1.35;
+    const blockGap = verticalGap > Math.max(8, Math.min(currentRecord.height, nextRecord.height) * 0.75);
+    if (currentRecord.page !== nextRecord.page || fontSizeTransition || blockGap) {
+      result.push("\n\n");
+    }
+  }
+  return result;
 }
 
 export function orderTextNodesByPosition(records) {
