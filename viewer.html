@@ -7,13 +7,62 @@
     <link rel="stylesheet" href="viewer.css">
   </head>
   <body>
-    <header>
+    <header class="app-bar">
       <strong>PDF Sentence Navigator</strong>
-      <span id="status" role="status">Loading PDF…</span>
-      <span class="help"><kbd>Tab</kbd> next · <kbd>Shift</kbd> + <kbd>Tab</kbd> previous</span>
+      <div class="document-status">
+        <span id="status" role="status">Loading PDF…</span>
+        <progress id="loading-progress" max="1" value="0" aria-label="PDF loading progress"></progress>
+      </div>
+      <span class="help" id="shortcut-help"><kbd>Tab</kbd> next · <kbd>Shift+Tab</kbd> previous</span>
     </header>
     <main id="viewer" aria-label="PDF document"></main>
-    <div id="error" hidden></div>
+    <section id="empty-state" hidden>
+      <h1>No selectable text found</h1>
+      <p>This PDF may contain scanned images. Local OCR is not included.</p>
+    </section>
+    <div id="error" role="alert" hidden></div>
+
+    <nav id="toolbar" aria-label="Sentence navigation" hidden>
+      <button id="first" title="First sentence" aria-label="First sentence">⇤</button>
+      <button id="previous" title="Previous sentence" aria-label="Previous sentence">←</button>
+      <output id="position">Sentence 0 of 0</output>
+      <button id="next" title="Next sentence" aria-label="Next sentence">→</button>
+      <button id="last" title="Last sentence" aria-label="Last sentence">⇥</button>
+      <span class="divider"></span>
+      <button id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+      <output id="zoom-level" aria-label="Zoom level">100%</output>
+      <button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+      <span class="divider"></span>
+      <button id="focus-toggle" title="Toggle focus mode" aria-pressed="false">Focus</button>
+      <button id="speak" title="Read active sentence aloud">Speak</button>
+      <button id="settings-open" title="Preferences" aria-label="Preferences">⚙</button>
+    </nav>
+
+    <dialog id="settings">
+      <form method="dialog">
+        <header><h2>Reading preferences</h2><button value="cancel" aria-label="Close">×</button></header>
+        <label>Highlight color <input id="highlight-color" type="color"></label>
+        <label>Highlight opacity <input id="highlight-opacity" type="range" min="20" max="90" step="5"></label>
+        <label>Next sentence key <select id="next-key"><option>Tab</option><option>ArrowDown</option><option>ArrowRight</option><option>Enter</option></select></label>
+        <label>Previous sentence key <select id="previous-key"><option value="Shift+Tab">Shift+Tab</option><option>ArrowUp</option><option>ArrowLeft</option><option value="Shift+Enter">Shift+Enter</option></select></label>
+        <label class="check"><input id="smooth-scroll" type="checkbox"> Smooth scrolling</label>
+        <label class="check"><input id="focus-default" type="checkbox"> Start in focus mode</label>
+        <label class="check"><input id="high-contrast" type="checkbox"> High-contrast controls</label>
+        <label class="check"><input id="reduced-motion" type="checkbox"> Reduce motion</label>
+        <label class="check"><input id="announce-sentence" type="checkbox"> Announce sentence position to screen readers</label>
+        <footer><button id="settings-reset" value="reset" type="button">Reset</button><button value="save">Save</button></footer>
+      </form>
+    </dialog>
+
+    <dialog id="password-dialog">
+      <form method="dialog">
+        <h2>Protected PDF</h2><p>Enter the PDF password. It stays in this browser tab.</p>
+        <input id="pdf-password" type="password" autocomplete="off" required>
+        <footer><button value="cancel">Cancel</button><button value="submit">Open PDF</button></footer>
+      </form>
+    </dialog>
+    <div id="toast" role="status" aria-live="polite" hidden></div>
+    <div id="live-region" class="sr-only" aria-live="polite"></div>
     <script type="module" src="viewer.js"></script>
   </body>
 </html>

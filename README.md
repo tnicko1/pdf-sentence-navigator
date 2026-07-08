@@ -7,6 +7,21 @@ A Chrome Manifest V3 extension for keyboard navigation between sentences in PDF 
 - The active sentence is highlighted in the document.
 - All PDF parsing and sentence segmentation happen locally in Chrome. No document text is sent to an external service.
 
+## Reader features
+
+- Floating controls for first, previous, next, and last sentence
+- Sentence and page progress
+- Zoom controls and optional focus mode
+- Configurable highlight color and opacity
+- Click any rendered sentence to activate it
+- Customizable next/previous keyboard shortcuts
+- `Home` / `End` for the first/last sentence
+- `Page Up` / `Page Down` for page-level navigation
+- High-contrast and reduced-motion preferences
+- Screen-reader position announcements
+- Browser text-to-speech for the active sentence
+- Preferences persisted locally with `chrome.storage`
+
 ## Install in Chrome
 
 1. Download or clone this repository.
@@ -22,6 +37,8 @@ A Chrome Manifest V3 extension for keyboard navigation between sentences in PDF 
 2. Wait until the status bar reports how many sentences were found.
 3. Press **Tab** to highlight and move to the next sentence.
 4. Press **Shift + Tab** to move back.
+
+Use the floating toolbar's gear button to configure visuals, scrolling, accessibility, and keyboard shortcuts. Preferences remain local to Chrome.
 
 Scanned/image-only PDFs need OCR and therefore show “No selectable text found”; this extension intentionally does not upload files for OCR.
 
