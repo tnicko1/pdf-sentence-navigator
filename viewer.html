@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF Sentence Navigator</title>
+    <link rel="stylesheet" href="viewer.css">
+  </head>
+  <body>
+    <header>
+      <strong>PDF Sentence Navigator</strong>
+      <span id="status" role="status">Loading PDF…</span>
+      <span class="help"><kbd>Tab</kbd> next · <kbd>Shift</kbd> + <kbd>Tab</kbd> previous</span>
+    </header>
+    <main id="viewer" aria-label="PDF document"></main>
+    <div id="error" hidden></div>
+    <script type="module" src="viewer.js"></script>
+  </body>
+</html>
