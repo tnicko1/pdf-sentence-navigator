@@ -9,8 +9,12 @@ test("loads a PDF at 100% and navigates complete sentences", async () => {
     args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
   });
   try {
+    let [worker] = context.serviceWorkers();
+    if (!worker) worker = await context.waitForEvent("serviceworker");
+    const extensionId = new URL(worker.url()).host;
     const page = await context.newPage();
-    await page.goto("http://127.0.0.1:4173/sample.pdf");
+    const pdf = encodeURIComponent("http://127.0.0.1:4173/sample.pdf");
+    await page.goto(`chrome-extension://${extensionId}/viewer.html?file=${pdf}`);
     await expect(page.locator("#toolbar")).toBeVisible({ timeout: 30_000 });
     await expect(page.locator("#zoom-level")).toHaveText("100%");
     await page.keyboard.press("Tab");
